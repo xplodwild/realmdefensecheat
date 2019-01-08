@@ -237,7 +237,7 @@ type SaveData struct {
 	Mem   SaveDataMem   `json:"mem"`
 	Mh    int           `json:"mh"`
 	Mq    SaveDataMq    `json:"mq"`
-	Pa    int           `json:"pa"`
+	Pa    float64           `json:"pa"`
 	// Q is the quests data
 	Q   SaveDataQuests `json:"q"`
 	Rvw bool           `json:"rvw"`
@@ -499,8 +499,8 @@ type SaveDataFs struct {
 	Ad int `json:"ad"`
 	// K is the type of item brewing in the slot (am = armageddon)
 	K string `json:"k"`
-	// St is the timestamp at which you started brewing the item
-	St uint64 `json:"st"`
+	// St is the timestamp (uint64) at which you started brewing the item, or "" if there was never any
+	St interface{} `json:"st"`
 	// U is whether the slot is currently used
 	U bool `json:"u"`
 }
