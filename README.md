@@ -17,9 +17,10 @@ You will find a prebuilt version for Windows in the Release section. Open a comm
 prompt inside the folder where you've downloaded the .exe.
 
 **Before running the command, start by Saving your game. Go into the game's settings,
-press the "Backup & Restore" button, then "Backup". Once the button go grey, you can
-run the command below. NOT DOING A SAVE MAY MAKE YOU LOOSE RECENT PROGRESS, OR ISSUES
-WITH YOUR ENTIRE PROGRESS, SO BE CAREFUL TO SAVE BEFORE RUNNING THE COMMAND!**
+press the "Backup & Restore" button, then "Backup". Once the button go grey, close the
+game by swiping it off your recents app. Then, you can run the command below. NOT DOING
+A SAVE MAY MAKE YOU LOOSE RECENT PROGRESS, OR ISSUES WITH YOUR ENTIRE PROGRESS, SO BE
+CAREFUL TO SAVE BEFORE RUNNING THE COMMAND!**
 
 Once your game is saved, run:
 
@@ -31,8 +32,8 @@ Replace `YOUR_USER_ID` with your actual account ID. This can be found by going i
 the game's settings, press "Contact", and copy the "ID" contained in the message. It
 looks like "abcdef12-1234-ab12-abcd-12345678abcd".
 
-Once the program did its things, press the "Restore" button in the game's Save
-settings. Your gem counter should have increased by 1000.
+Once the program did its things, open the game again. Your gem counter should now have
+increased by 1000.
 
 
 ## Building the software
