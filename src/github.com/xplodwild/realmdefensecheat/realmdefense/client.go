@@ -93,6 +93,8 @@ func (c *Client) POST(api string, body []byte, gz bool, acceptGz bool) ([]byte, 
 
 	if res.StatusCode != 200 {
 		fmt.Printf("Got %d HTTP status code!\n", res.StatusCode)
+		fmt.Printf("Raw result: %s\n", resBody)
+		fmt.Printf("Raw request: %s\n", body)
 	}
 
 	// Handle Gzip responses

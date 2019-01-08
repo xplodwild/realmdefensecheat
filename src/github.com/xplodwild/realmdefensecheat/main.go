@@ -82,7 +82,7 @@ func setupShell() {
 		shell.Println("First of all, please type in your User ID. It can be found when pressing")
 		shell.Println("the Contact button in the game's settings. It looks like this: abcdef12-1234-ab12-abcd-12345678abcd")
 		shell.Print("User ID: ")
-		userId := shell.ReadLine()
+		userId = shell.ReadLine()
 
 		if len(userId) != 36 {
 			shell.Println("Your user ID should be 36 characters long. Please double-check what you've typed.")
