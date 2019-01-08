@@ -3,6 +3,7 @@ package realmdefense
 import (
 	"bytes"
 	"compress/gzip"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -25,6 +26,23 @@ func NewClient(endpoint string, userAgent string) *Client {
 		userAgent: userAgent,
 		cli:       &http.Client{},
 	}
+}
+
+func (c *Client) LoadSave(request LoadSaveRequest) (LoadSaveResponse, error) {
+	var responseData LoadSaveResponse
+
+	res, err := c.POST(ApiLoadSave, ToJson(request), false, true)
+	if err != nil {
+		return responseData, err
+	}
+
+	err = json.Unmarshal(res, &responseData)
+	return responseData, err
+}
+
+func (c *Client) Save(save SaveRequest) error {
+	_, err := c.POST(ApiSave, ToJson(save), false, false)
+	return err
 }
 
 func (c *Client) POST(api string, body []byte, gz bool, acceptGz bool) ([]byte, error) {

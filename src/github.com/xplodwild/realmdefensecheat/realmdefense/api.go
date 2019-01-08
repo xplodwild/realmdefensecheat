@@ -30,7 +30,7 @@ type LoadSaveRequest struct {
 	Seq  int
 }
 
-type MessageLoadSaveResponse struct {
+type LoadSaveResponse struct {
 	LoadOrSave  bool
 	Seq         int
 	Data        string

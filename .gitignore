@@ -1,3 +1,6 @@
 .idea/
 pkg/
+bin/
 *.iml
+*.json
+*.exe
