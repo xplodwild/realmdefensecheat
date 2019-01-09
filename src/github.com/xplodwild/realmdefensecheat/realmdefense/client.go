@@ -45,6 +45,28 @@ func (c *Client) Save(save SaveRequest) error {
 	return err
 }
 
+func (c *Client) TournamentQuery(request TournamentQuery) (TournamentResponse, error) {
+	var responseData TournamentResponse
+
+	res, err := c.POST(ApiTournamentQuery, ToJson(request), false, true)
+	if err != nil {
+		return responseData, err
+	}
+
+	err = json.Unmarshal(res, &responseData)
+	return responseData, err
+}
+
+func (c *Client) TournamentScore(request TournamentScoreRequest) error {
+	res, err := c.POST(ApiTournamentScore, ToJson(request), false, true)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Tournament score res: %s\n", res)
+	return nil
+}
+
 func (c *Client) POST(api string, body []byte, gz bool, acceptGz bool) ([]byte, error) {
 	// Create a new request
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s", c.endpoint, api), bytes.NewReader(body))

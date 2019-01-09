@@ -3,11 +3,13 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/xplodwild/realmdefensecheat/realmdefense"
 	"gopkg.in/abiosoft/ishell.v2"
 	"io/ioutil"
 	"os"
 	"strconv"
+	"time"
 )
 
 func main() {
@@ -462,6 +464,140 @@ func setupShell() {
 
 				shell.Println("Game saved!")
 			}
+		},
+	})
+
+	shell.AddCmd(&ishell.Cmd{
+		Name: "tournament",
+		Help: "Sends the specified score as tournament",
+		Func: func(c *ishell.Context) {
+			if len(c.Args) != 2 {
+				shell.Println("Sends the specified score as your tournament score.")
+				shell.Println("Make sure it's legit, otherwise you're in big troubles. Heroes will be asked while running the command.")
+				shell.Println("Usage: tournament <kills> <time in MILLIseconds>")
+				shell.Println("Example: tournament 304 242871")
+				return
+			}
+
+			kills, err := strconv.ParseUint(c.Args[0], 10, 64)
+			if err != nil {
+				shell.Println(c.Args[0], "is not a valid numerical value")
+				return
+			}
+
+			millis, err := strconv.ParseUint(c.Args[1], 10, 64)
+			if err != nil {
+				shell.Println(c.Args[1], "is not a valid numerical value")
+				return
+			}
+
+			// Load the user data (for country code, nickname, etc)
+			shell.Println("Loading game data...")
+			res, err := cli.LoadSave(realmdefense.LoadSaveRequest{
+				Data: "",
+				Id:   userId,
+				Seq:  1,
+			})
+
+			if err != nil {
+				shell.Println("Failed to load game data:", err)
+				return
+			}
+
+			gameData, err := decodeGameData(res.Data)
+			if err != nil {
+				shell.Println("Failed to decode game data:", err)
+				return
+			}
+
+			// Query the heroes to use
+			heroesNames := []string{
+				"", "Hogan", "Fee", "Obsidian", "Masamune", "Lancelot", "Bolton", "Smoulder", "Connie",
+				"Efrigid", "Helios", "Sethos", "Mabyn", "Yan", "Narlax", "Leif", "Caldera", "Azura",
+			}
+			var heroes []int
+			heroesLevels := []int{30, 30, 30}
+			heroesRanks := []int{6, 6, 6}
+
+			for heroes == nil || len(heroes) != 3 {
+				heroes = shell.Checklist(heroesNames, "Select 3 heroes", []int{})
+			}
+
+			// Ask the heroes levels
+			for i := 0; i < 3; i++ {
+				shell.Println("Please enter", heroesNames[heroes[i]], "level [1-30]")
+				heroesLevels[i], err = strconv.Atoi(shell.ReadLine())
+
+				if err != nil || heroesLevels[i] < 1 || heroesLevels[i] > 30 {
+					shell.Println("Invalid value")
+					i--
+				}
+			}
+
+			// Ask the heroes ranks
+			for i := 0; i < 3; i++ {
+				shell.Println("Please enter", heroesNames[heroes[i]], "rank [1-6]")
+				heroesRanks[i], err = strconv.Atoi(shell.ReadLine())
+
+				if err != nil || heroesRanks[i] < 1 || heroesRanks[i] > 6 {
+					shell.Println("Invalid value")
+					i--
+				}
+			}
+
+			// Load the tournament data
+			shell.Println("Loading tournament data...")
+			tnQuery, err := cli.TournamentQuery(realmdefense.TournamentQuery{
+				Uid:   userId,
+				Realm: "Android",
+			})
+
+			if err != nil {
+				shell.Println("Failed to load tournament data:", err)
+				return
+			}
+
+			if tnQuery.Banned {
+				shell.Println("It looks like you are banned from the tournament!")
+				return
+			}
+
+			if tnQuery.Status != 1 {
+				shell.Println("It doesn't look like the tournament has opened yet")
+				return
+			}
+
+			shell.Println("Tournament ID:", tnQuery.Tid)
+			shell.Println("Current league:", tnQuery.League)
+
+			duration, _ := time.ParseDuration(fmt.Sprintf("%dms", millis))
+			shell.Println("Posting score:", kills, " kills in ", duration)
+
+			err = cli.TournamentScore(realmdefense.TournamentScoreRequest{
+				Uid: userId,
+				Data: string(realmdefense.ToJson(realmdefense.TournamentScoreData{
+					CountryCode: gameData.Cc,
+					Duration:    millis,
+					KillCount:   int(kills),
+					Heroes:      heroes,
+					Levels:      heroesLevels,
+					Ranks:       heroesRanks,
+					Skins:       []string{"", "", ""},
+					Username:    gameData.Sal,
+					W17Bonus:    false,
+					W17Stars:    0,
+				})),
+				Realm: "Android",
+				Power: 242871,
+				Score: realmdefense.CalculateTournamentScore(kills, millis),
+				Tid:   tnQuery.Tid,
+			})
+			if err != nil {
+				shell.Println("Failed to send tournament score:", err)
+				return
+			}
+
+			shell.Println("Tournament score sent! Hope you win :)")
 		},
 	})
 

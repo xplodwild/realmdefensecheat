@@ -237,7 +237,7 @@ type SaveData struct {
 	Mem   SaveDataMem   `json:"mem"`
 	Mh    int           `json:"mh"`
 	Mq    SaveDataMq    `json:"mq"`
-	Pa    float64           `json:"pa"`
+	Pa    float64       `json:"pa"`
 	// Q is the quests data
 	Q   SaveDataQuests `json:"q"`
 	Rvw bool           `json:"rvw"`
@@ -640,7 +640,7 @@ type TournamentScoreRequest struct {
 	Data  string // TournamentScoreData
 	Power int
 	Realm string
-	Score int
+	Score uint64
 	Tid   string
 	Uid   string
 }

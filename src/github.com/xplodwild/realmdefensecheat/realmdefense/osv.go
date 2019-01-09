@@ -35,3 +35,7 @@ func MakeIVEntryValue(value int) SaveDataIvEntry {
 		U: MakeOSVValue(0),
 	}
 }
+
+func CalculateTournamentScore(kills uint64, duration uint64) uint64 {
+	return 86400000*kills - duration
+}
