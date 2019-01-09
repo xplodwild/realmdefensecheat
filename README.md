@@ -25,7 +25,6 @@ Double-click on the exe to get an interactive prompt. Sorry, no shiny user inter
 Follow the instructions on screen to enter your User ID, make sure your game data
 is backed-up to cloud, then type ` help` to get information on the commands available:
 
-* `add-gems` adds the specified amount of gems to your account. Example: `add-gems 1000` 
 * `backup` saves your current game into the specified filename. It is very useful to do a backup
   before running any other command, in case anything goes wrong. Also, this let you restore your
   progress to your account or to another account, as well as let you edit any value you want in
@@ -33,6 +32,15 @@ is backed-up to cloud, then type ` help` to get information on the commands avai
 * `restore` restores your saved game file to the server (that has been obtained through the
   `backup` command). Note that the values are left as-is, so if you're restoring your save to
   a new account, make sure to update the "Uid" field in the JSON file to your new account ID.
+* `add-gems` adds the specified amount of gems to your account. Example: `add-gems 1000` 
+* `add-elixir` adds the specified amount of elixir to your account. Example: `add-elixir 1000`
+* `add-tokens` adds the specified amount of tokens to your hero. Example: `add-tokens bolton 80`
+* `tournament` lets you send a custom tournament score to the server. Start by thinking how many
+  kills you want, and in how much time (in **milliseconds**), then run `tournament <kills> <duration>`
+  for example: `tournament 500 344108` (344108 = 5:44.108). Then, use the arrow keys and space
+  bar to select the 3 heroes you want to use, then confirm using Return once you have 3 heroes.
+  Then, for each hero, enter their level. Once that's done, enter their awakening rank. And 
+  once that's done, your score is sent to the server and in the ladder :) 
 
 ## Building the software
 
