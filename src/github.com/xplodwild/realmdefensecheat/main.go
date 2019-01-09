@@ -119,39 +119,6 @@ func setupShell() {
 	// Register the shell commands
 	shell.AddCmd(&ishell.Cmd{
 		Name: "backup",
-		Help: "Backs up your current game save into the specified file name",
-		Func: func(c *ishell.Context) {
-			if len(c.Args) != 1 {
-				shell.Println("Usage: backup <filename>")
-				shell.Println("Example: backup my-save-2019-01-01.json")
-				return
-			}
-
-			shell.Println("Downloading game save...")
-			res, err := cli.LoadSave(realmdefense.LoadSaveRequest{
-				Data: "",
-				Id:   userId,
-				Seq:  1,
-			})
-
-			if err != nil {
-				shell.Printf("Error while loading game save: %s\n", err)
-				return
-			}
-
-			shell.Printf("Writing game save to %s...\n", c.Args[0])
-			err = ioutil.WriteFile(c.Args[0], []byte(res.Data), 0644)
-			if err != nil {
-				shell.Printf("Failed to write file: %s\n", err)
-				return
-			}
-
-			shell.Printf("Game saved to %s!\n", c.Args[0])
-		},
-	})
-
-	shell.AddCmd(&ishell.Cmd{
-		Name: "backup",
 		Help: "Backs up your current game save into a file",
 		Func: func(c *ishell.Context) {
 			if len(c.Args) != 1 {
@@ -254,6 +221,7 @@ func setupShell() {
 		Func: func(c *ishell.Context) {
 			if len(c.Args) != 1 {
 				shell.Println("Adds the specified amount of gems to your account.")
+				shell.Println("If the amount is 0, this will only load and show your gems amount without touching your save.")
 				shell.Println("Usage: add-gems <amount>")
 				shell.Println("Example: add-gems 1000")
 				return
@@ -286,27 +254,214 @@ func setupShell() {
 
 			// Change the amount of gems
 			gems := realmdefense.GetValueFromIVEntry(gameData.Iv.G)
-			shell.Printf("Current amount of gems: %d\n", gems)
-			shell.Printf("New amount of gems: %d\n", gems+amount)
-
 			gameData.Iv.G = realmdefense.MakeIVEntryValue(gems + amount)
 
-			// Don't forget to update the sequence number
-			gameData.Seq++
+			shell.Printf("Current amount of gems: %d\n", gems)
 
-			shell.Println("Sending new game save...")
-			err = cli.Save(realmdefense.SaveRequest{
-				Data: string(realmdefense.ToJson(gameData)),
-				Id:   gameData.Uid,
-				Seq:  gameData.Seq,
-			})
+			if amount != 0 {
+				shell.Printf("New amount of gems: %d\n", gems+amount)
 
-			if err != nil {
-				shell.Println("Error while sending game save:", err)
+				// Don't forget to update the sequence number
+				gameData.Seq++
+
+				shell.Println("Sending new game save...")
+				err = cli.Save(realmdefense.SaveRequest{
+					Data: string(realmdefense.ToJson(gameData)),
+					Id:   gameData.Uid,
+					Seq:  gameData.Seq,
+				})
+
+				if err != nil {
+					shell.Println("Error while sending game save:", err)
+					return
+				}
+
+				shell.Println("Game saved!")
+			}
+		},
+	})
+
+	shell.AddCmd(&ishell.Cmd{
+		Name: "add-elixir",
+		Help: "Adds the specified amount of elixir to your account",
+		Func: func(c *ishell.Context) {
+			if len(c.Args) != 1 {
+				shell.Println("Adds the specified amount of elixir to your account.")
+				shell.Println("If the amount is 0, this will only load and show your elixir amount without touching your save.")
+				shell.Println("Usage: add-elixir <amount>")
+				shell.Println("Example: add-elixir 1000")
 				return
 			}
 
-			shell.Println("Game saved!")
+			amount, err := strconv.Atoi(c.Args[0])
+			if err != nil {
+				shell.Println(c.Args[0], "is not a valid numerical value")
+				return
+			}
+
+			// Load our game save
+			shell.Println("Loading game data...")
+			res, err := cli.LoadSave(realmdefense.LoadSaveRequest{
+				Data: "",
+				Id:   userId,
+				Seq:  1,
+			})
+
+			if err != nil {
+				shell.Println("Failed to load game data:", err)
+				return
+			}
+
+			gameData, err := decodeGameData(res.Data)
+			if err != nil {
+				shell.Println("Failed to decode game data:", err)
+				return
+			}
+
+			// Change the amount of elixir
+			elixir := realmdefense.GetValueFromIVEntry(gameData.Iv.X)
+			gameData.Iv.X = realmdefense.MakeIVEntryValue(elixir + amount)
+			shell.Printf("Current amount of elixir: %d\n", elixir)
+
+			if amount != 0 {
+				shell.Printf("New amount of elixir: %d\n", elixir+amount)
+
+				// Don't forget to update the sequence number
+				gameData.Seq++
+
+				shell.Println("Sending new game save...")
+				err = cli.Save(realmdefense.SaveRequest{
+					Data: string(realmdefense.ToJson(gameData)),
+					Id:   gameData.Uid,
+					Seq:  gameData.Seq,
+				})
+
+				if err != nil {
+					shell.Println("Error while sending game save:", err)
+					return
+				}
+
+				shell.Println("Game saved!")
+			}
+		},
+	})
+
+	shell.AddCmd(&ishell.Cmd{
+		Name: "add-tokens",
+		Help: "Adds the specified amount of awakening tokens to your account",
+		Func: func(c *ishell.Context) {
+			if len(c.Args) != 2 {
+				shell.Println("Adds the specified amount of awakening tokens to your account.")
+				shell.Println("If the amount is 0, this will only load and show your hero's tokens without touching your save.")
+				shell.Println("Usage: add-tokens <hero> <amount>")
+				shell.Println("List of heroes: bolton, caldera, connie, efrigid, fee, helios, hogan, kaguya (azura), lancelot, leif, mabyn, masamune, narlax, obsidian, sethos, smoulder, yan")
+				shell.Println("Example: add-tokens kaguya 80")
+				return
+			}
+
+			amount, err := strconv.Atoi(c.Args[1])
+			if err != nil {
+				shell.Println(c.Args[0], "is not a valid numerical value")
+				return
+			}
+
+			hero := c.Args[0]
+
+			// Load our game save
+			shell.Println("Loading game data...")
+			res, err := cli.LoadSave(realmdefense.LoadSaveRequest{
+				Data: "",
+				Id:   userId,
+				Seq:  1,
+			})
+
+			if err != nil {
+				shell.Println("Failed to load game data:", err)
+				return
+			}
+
+			gameData, err := decodeGameData(res.Data)
+			if err != nil {
+				shell.Println("Failed to decode game data:", err)
+				return
+			}
+
+			// Change the amount of tokens
+			origTokens := 0
+
+			switch hero {
+			case "bolton":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tbolton)
+				gameData.Iv.Tbolton = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "caldera":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tcaldera)
+				gameData.Iv.Tcaldera = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "connie":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tconnie)
+				gameData.Iv.Tconnie = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "efrigid":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tefrigid)
+				gameData.Iv.Tefrigid = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "fee":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tfee)
+				gameData.Iv.Tfee = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "helios":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Thelios)
+				gameData.Iv.Thelios = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "hogan":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Thogan)
+				gameData.Iv.Thogan = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "kaguya":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tkaguya)
+				gameData.Iv.Tkaguya = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "lancelot":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tlancelot)
+				gameData.Iv.Tlancelot = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "leif":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tleif)
+				gameData.Iv.Tleif = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "mabyn":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tmabyn)
+				gameData.Iv.Tmabyn = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "masamune":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tmasamune)
+				gameData.Iv.Tmasamune = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "narlax":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tnarlax)
+				gameData.Iv.Tnarlax = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "obsidian":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tobsidian)
+				gameData.Iv.Tobsidian = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "sethos":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tsethos)
+				gameData.Iv.Tsethos = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "smoulder":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tsmoulder)
+				gameData.Iv.Tsmoulder = realmdefense.MakeIVEntryValue(origTokens + amount)
+			}
+
+			shell.Printf("Current amount of %s tokens: %d\n", hero, origTokens)
+
+			if amount != 0 {
+				shell.Printf("New amount of %s tokens: %d\n", hero, origTokens+amount)
+
+				// Don't forget to update the sequence number
+				gameData.Seq++
+
+				shell.Println("Sending new game save...")
+				err = cli.Save(realmdefense.SaveRequest{
+					Data: string(realmdefense.ToJson(gameData)),
+					Id:   gameData.Uid,
+					Seq:  gameData.Seq,
+				})
+
+				if err != nil {
+					shell.Println("Error while sending game save:", err)
+					return
+				}
+
+				shell.Println("Game saved!")
+			}
 		},
 	})
 
