@@ -25,7 +25,7 @@ func MakeOSVValue(value int) SaveDataOsvVal {
 	return SaveDataOsvVal{
 		O: o,
 		S: s,
-		V: o + value,
+		V: o + (value * s),
 	}
 }
 
