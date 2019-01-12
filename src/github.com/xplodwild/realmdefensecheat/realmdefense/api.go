@@ -198,7 +198,7 @@ type SaveData struct {
 	Fbc  bool          `json:"fbc"`
 	Fbgt int           `json:"fbgt"`
 	Fek  SaveDataFek   `json:"fek"`
-	Fnd  []interface{} `json:"fnd"`
+	Fnd  interface{}   `json:"fnd"`
 	// Fs are the Forge Slots
 	Fs []SaveDataFs `json:"fs"`
 	// Hs is the heroes data. It's an array of array of various values. Here's a quick rundown of the layout:
