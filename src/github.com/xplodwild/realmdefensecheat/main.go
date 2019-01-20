@@ -440,6 +440,9 @@ func setupShell() {
 			case "smoulder":
 				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tsmoulder)
 				gameData.Iv.Tsmoulder = realmdefense.MakeIVEntryValue(origTokens + amount)
+			case "yan":
+				origTokens = realmdefense.GetValueFromIVEntry(gameData.Iv.Tyan)
+				gameData.Iv.Tyan = realmdefense.MakeIVEntryValue(origTokens + amount)
 			}
 
 			shell.Printf("Current amount of %s tokens: %d\n", hero, origTokens)
