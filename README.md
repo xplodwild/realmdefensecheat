@@ -1,15 +1,14 @@
 # Realm Defense Cheat Tool
 
 This is a (legit) cheating tool for Babeltime's Realm Defense game, a mobile game 
-available on both Android and iOS. By default, running this with your user account
-will give you 1000 more gems. You can tune the source code to modify everything else,
-such as elixir, awakening tokens, and more.
+available on both Android and iOS. This gives you a command-line interface to add yourself
+gems, elixir, awakening tokens, set a custom tournament score, etc.
 
 For more technical information on how this came to be, you can [read my Medium article
 about how I found out the hash computation method](https://medium.com/@xplodwild/turning-the-frustration-of-a-mobile-game-into-a-reverse-engineering-training-a9887043efdf).
 
-When I have a bit more time, this will evolve into a fully-featured save editor, as
-well as a tournament custom score tool.
+**RUN THE "backup" COMMAND BEFORE DOING ANYTHING! If anything happens to your save
+using this tool, it is the only way to recover your progress if it goes wrong!**
 
 ## Downloading and running
 
@@ -28,7 +27,8 @@ is backed-up to cloud, then type ` help` to get information on the commands avai
 * `backup` saves your current game into the specified filename. It is very useful to do a backup
   before running any other command, in case anything goes wrong. Also, this let you restore your
   progress to your account or to another account, as well as let you edit any value you want in
-  your game save. You can then apply it by running the `restore` command.
+  your game save. You can then apply it by running the `restore` command. **I strongly
+  recommend you to run this command first to avoid any problem.**
 * `restore` restores your saved game file to the server (that has been obtained through the
   `backup` command). Note that the values are left as-is, so if you're restoring your save to
   a new account, make sure to update the "Uid" field in the JSON file to your new account ID.
@@ -69,9 +69,9 @@ contains a default User-Agent for my own phone, but you can set your own phone's
 User-Agent by using the --useragent option. 
 * Despite this, I'm not responsible if anything happens to your profile (get banned,
 or anything). Just don't give yourself too many gems too quicky I guess. If anything
-ever goes wrong, the tool will soon be able to backup and restore a full game save
-to a different account, so that if you get banned, you can recover your progress on
-a new account.
-* Yes, you can modify the dat arandom people. Just take their user IDs from
+ever goes wrong, keep your backup file safe (you did one, right?) and open an issue
+so that I can investigate. Generally, errors happen when new fields were added that aren't
+saved by the cheat. Once added, you will be able to restore your save and continue.
+* Yes, you can modify the data of random people. Just take their user IDs from
 Facebook events comments.
 * If anyone wants to complete the api.go file with some fields descriptions, feel free.
