@@ -58,3 +58,53 @@ func (t *SaveData) UnmarshalJSON(b []byte) error {
 
 	return nil
 }
+
+type _SaveDataIv SaveDataIv
+
+func (t SaveDataIv) MarshalJSON() ([]byte, error) {
+	data := make(map[string]interface{})
+
+	// Take everything in Extra
+	for k, v := range t.Extra {
+		data[k] = v
+	}
+
+	// Take all the struct values with a json tag
+	val := reflect.ValueOf(t)
+	typ := reflect.TypeOf(t)
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		fieldv := val.Field(i)
+		jsonTag := strings.Split(field.Tag.Get("json"), ",")[0]
+		if jsonTag != "" && jsonTag != "-" {
+			data[jsonTag] = fieldv.Interface()
+		}
+	}
+	return json.Marshal(data)
+}
+
+func (t *SaveDataIv) UnmarshalJSON(b []byte) error {
+	t2 := _SaveDataIv{}
+	err := json.Unmarshal(b, &t2)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(b, &(t2.Extra))
+	if err != nil {
+		return err
+	}
+
+	typ := reflect.TypeOf(t2)
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		jsonTag := strings.Split(field.Tag.Get("json"), ",")[0]
+		if jsonTag != "" && jsonTag != "-" {
+			delete(t2.Extra, jsonTag)
+		}
+	}
+
+	*t = SaveDataIv(t2)
+
+	return nil
+}

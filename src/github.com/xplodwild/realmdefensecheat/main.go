@@ -70,6 +70,31 @@ func setupShell() {
 
 	// Register the shell commands
 	shell.AddCmd(&ishell.Cmd{
+		Name: "decrypt",
+		Help: "Decrypts the specified filepath into filepath.dec",
+		Func: func(c *ishell.Context) {
+			if len(c.Args) != 1 {
+				shell.Println("Usage: decrypt <filepath>")
+				return
+			}
+
+			file, err := ioutil.ReadFile(c.Args[0])
+			if err != nil {
+				shell.Printf("Failed to read %s: %s\n", c.Args[0], err)
+				return
+			}
+
+			err = ioutil.WriteFile(c.Args[0]+".dec", realmdefense.DecryptCFB(file), 0644)
+			if err != nil {
+				shell.Printf("Failed to write: %s\n", err)
+				return
+			}
+
+			shell.Println("Decrypted")
+		},
+	})
+
+	shell.AddCmd(&ishell.Cmd{
 		Name: "backup",
 		Help: "Backs up your current game save into a file",
 		Func: func(c *ishell.Context) {

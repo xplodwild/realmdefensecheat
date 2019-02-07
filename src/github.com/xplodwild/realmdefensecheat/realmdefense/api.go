@@ -414,6 +414,9 @@ type SaveDataLiveRaida struct {
 
 // SaveDataIv is the items values
 type SaveDataIv struct {
+	// see extrajson.go
+	Extra map[string]interface{} `json:"-"`
+
 	// Am is the number of Armageddon
 	Am SaveDataIvEntry `json:"am"`
 	// B is the number of fire bombs
@@ -427,6 +430,8 @@ type SaveDataIv struct {
 	EvtTkCaldera SaveDataIvEntry `json:"evt_tk_caldera"`
 	// EvtTkKaguya is the number of Azura tokens (why is she called Kaguya everywhere?)
 	EvtTkKaguya SaveDataIvEntry `json:"evt_tk_kaguya"`
+	// EvtTkRaida is the number of Raida tokens
+	EvtTkRaida SaveDataIvEntry `json:"evt_tk_raida"`
 	// F is the number of freeze potions
 	F SaveDataIvEntry `json:"f"`
 	// FF is the number of level 2 free potions
