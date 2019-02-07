@@ -374,6 +374,7 @@ type SaveDataLive struct {
 	Caldera    SaveDataLiveCaldera    `json:"caldera"`
 	DivineStar SaveDataLiveDivineStar `json:"divine_star"`
 	Kaguya     SaveDataLiveKaguya     `json:"kaguya"`
+	Raida      SaveDataLiveRaida      `json:"raida"`
 }
 
 type SaveDataLiveCaldera struct {
@@ -397,6 +398,15 @@ type SaveDataLiveKaguya struct {
 type SaveDataLiveDivineStar struct {
 	Boxes   SaveDataOsvVal `json:"boxes"`
 	Bundles SaveDataOsvVal `json:"bundles"`
+	Lv1     SaveDataOsvVal `json:"lv1"`
+	Lv2     SaveDataOsvVal `json:"lv2"`
+	Lv3     SaveDataOsvVal `json:"lv3"`
+}
+
+type SaveDataLiveRaida struct {
+	Boxes   SaveDataOsvVal `json:"boxes"`
+	Bundles SaveDataOsvVal `json:"bundles"`
+	Claimed SaveDataOsvVal `json:"claimed"`
 	Lv1     SaveDataOsvVal `json:"lv1"`
 	Lv2     SaveDataOsvVal `json:"lv2"`
 	Lv3     SaveDataOsvVal `json:"lv3"`
@@ -463,6 +473,8 @@ type SaveDataIv struct {
 	Tnarlax SaveDataIvEntry `json:"tnarlax"`
 	// Tobsidian is the number of Obsidian Awakening Tokens
 	Tobsidian SaveDataIvEntry `json:"tobsidian"`
+	// Traida is the number of Raida Awakening Tokens
+	Traida SaveDataIvEntry `json:"traida"`
 	// Tsethos is the number of Sethos Awakening Tokens
 	Tsethos SaveDataIvEntry `json:"tsethos"`
 	// Tsmoulder is the number of Smoulder Awakening Tokens
