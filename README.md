@@ -2,7 +2,7 @@
 
 This is a (legit) cheating tool for Babeltime's Realm Defense game, a mobile game 
 available on both Android and iOS. This gives you a command-line interface to add yourself
-gems, elixir, awakening tokens, set a custom tournament score, etc.
+gems, elixir, awakening tokens, set a custom tournament score, get unbanned, etc.
 
 For more technical information on how this came to be, you can [read my Medium article
 about how I found out the hash computation method](https://medium.com/@xplodwild/turning-the-frustration-of-a-mobile-game-into-a-reverse-engineering-training-a9887043efdf).
@@ -41,6 +41,12 @@ is backed-up to cloud, then type ` help` to get information on the commands avai
   bar to select the 3 heroes you want to use, then confirm using Return once you have 3 heroes.
   Then, for each hero, enter their level. Once that's done, enter their awakening rank. And 
   once that's done, your score is sent to the server and in the ladder :) 
+* `unban` lets you get unbanned from the tournament. This will create you a completely new
+  account, while keeping your game progress untouched. You will be sent back to Bronze league,
+  but you will be able to participate again (no more "stuck at 50th"). You will need to reset the
+  game data on your phone or tablet before running this command, so that the new profile gets
+  applied when you restart the game. If you don't know how to do it: just uninstall then reinstall the
+  game after running the command.
 
 ## Building the software
 
@@ -65,13 +71,14 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Final notes
 
 * This tool should run quite undetected, since it uses the game's regular protocol. It
-contains a default User-Agent for my own phone, but you can set your own phone's
-User-Agent by using the --useragent option. 
+  contains a default User-Agent for my own phone, but you can set your own phone's
+  User-Agent by using the --useragent option. 
 * Despite this, I'm not responsible if anything happens to your profile (get banned,
-or anything). Just don't give yourself too many gems too quicky I guess. If anything
-ever goes wrong, keep your backup file safe (you did one, right?) and open an issue
-so that I can investigate. Generally, errors happen when new fields were added that aren't
-saved by the cheat. Once added, you will be able to restore your save and continue.
+  broken save, or anything). Just don't give yourself too many gems too quicky I guess.
+  If anything ever goes wrong, keep your backup file safe (you did one, right?) and open an issue
+  so that I can investigate. Generally, errors happen when new fields were added that aren't
+  saved by the cheat. Once added, you will be able to restore your save and continue.
+* If you get banned, use the "unban" command to reset your tournament score.
 * Yes, you can modify the data of random people. Just take their user IDs from
-Facebook events comments.
+  Facebook events comments.
 * If anyone wants to complete the api.go file with some fields descriptions, feel free.
