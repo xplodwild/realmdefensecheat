@@ -7,6 +7,10 @@ const (
 	ApiTime = "/time"
 	// ApiSave lets you do a "cloud save" of your in-game progress
 	ApiSave = "/save"
+	// ApiCreateSave is called when a new player creates a new save
+	ApiCreateSave = "/createsave"
+	// ApiBind is called when you bind a player social ID to a user account
+	ApiBind = "/bind"
 	// ApiRecover lets you do a "cloud restore" of your in-game progress
 	ApiRecover = "/recover"
 	// ApiLoadSave compares the existing save with the server one
@@ -160,10 +164,40 @@ type TournamentOverrideWaveModifierData struct {
 	AtkScale float64 `json:"atk_scale"`
 }
 
+type BindRequest struct {
+	// Id is the player UUID
+	Id string
+	// Platform is the platform, "PlayGames" on Android
+	Platform string
+	// SocialAlias is the player name set in the Play Games account
+	SocialAlias string
+	// SocialId is the actual ID from the social account
+	SocialId string
+}
+
+type RecoverRequest struct {
+	Platform string
+	SocialId string
+}
+
+type RecoverResponse struct {
+	Data []string
+}
+
 type SaveRequest struct {
 	Id   string
 	Seq  int
 	Data string
+}
+
+type CreateSaveRequest struct {
+	Seq  int
+	Data string
+}
+
+type CreateSaveResponse struct {
+	Id          string
+	CountryCode string
 }
 
 type SaveData struct {

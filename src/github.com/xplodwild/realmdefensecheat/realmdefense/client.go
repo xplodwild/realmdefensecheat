@@ -57,6 +57,35 @@ func (c *Client) Save(save SaveRequest) error {
 	return err
 }
 
+func (c *Client) CreateSave(save CreateSaveRequest) (CreateSaveResponse, error) {
+	var responseData CreateSaveResponse
+
+	res, err := c.POST(ApiCreateSave, ToJson(save), false, false)
+	if err != nil {
+		return responseData, err
+	}
+
+	err = json.Unmarshal(res, &responseData)
+	return responseData, err
+}
+
+func (c *Client) Bind(bind BindRequest) error {
+	_, err := c.POST(ApiBind, ToJson(bind), false, false)
+	return err
+}
+
+func (c *Client) Recover(rec RecoverRequest) (RecoverResponse, error) {
+	var responseData RecoverResponse
+
+	res, err := c.POST(ApiRecover, ToJson(rec), false, false)
+	if err != nil {
+		return responseData, err
+	}
+
+	err = json.Unmarshal(res, &responseData)
+	return responseData, err
+}
+
 func (c *Client) TournamentQuery(request TournamentQuery) (TournamentResponse, error) {
 	var responseData TournamentResponse
 

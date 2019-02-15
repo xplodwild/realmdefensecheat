@@ -95,6 +95,123 @@ func setupShell() {
 	})
 
 	shell.AddCmd(&ishell.Cmd{
+		Name: "recover",
+		Help: "(For Debugging Only) Stores the recovered data for the specified social ID in recover.json",
+		Func: func(c *ishell.Context) {
+			if len(c.Args) != 1 {
+				shell.Println("Usage: recover <socialID>")
+				return
+			}
+
+			res, err := cli.Recover(realmdefense.RecoverRequest{
+				SocialId: c.Args[0],
+				Platform: "PlayGames",
+			})
+			if err != nil {
+				shell.Println(err)
+				return
+			}
+
+			ioutil.WriteFile("recover.json", []byte(res.Data[0]), 0644)
+			shell.Println("Done")
+		},
+	})
+
+	shell.AddCmd(&ishell.Cmd{
+		Name: "unban",
+		Help: "Unbans you from the tournament",
+		Func: func(c *ishell.Context) {
+			shell.Println("*****************************")
+			shell.Println("This will initialize and create you a new player ID, which will reset your")
+			shell.Println("tournament profile, while restoring your current game save. First of all,")
+			shell.Println("BACKUP YOUR GAME DATA, then RESET THE GAME DATA on your phone, so that it")
+			shell.Println("doesn't synchronize back your old player ID.")
+			shell.Println("*****************************")
+			shell.Println("Press Enter to continue.")
+
+			shell.ReadLine()
+
+			// First, load the existing save to push back the progress
+			shell.Println("Downloading current game save...")
+			res, err := cli.LoadSave(realmdefense.LoadSaveRequest{
+				Data: "",
+				Id:   userId,
+				Seq:  1,
+			})
+
+			if err != nil {
+				shell.Printf("Error while loading game save: %s\n", err)
+				return
+			}
+
+			existingSaveData, err := decodeGameData(res.Data)
+			if err != nil {
+				shell.Println("Failed to decode existing game data:", err)
+				return
+			}
+
+			// Strip out the existing user ID and social ID so that the server generates a new one. Reset sequence
+			// to 0 as well, since it's a new save.
+			previousSaveSeq := existingSaveData.Seq
+			previousSocialId := existingSaveData.Sid
+			existingSaveData.Uid = ""
+			existingSaveData.Sid = ""
+			existingSaveData.Seq = 0
+
+			shell.Println("Creating a new save...")
+			newSaveDataBytes := realmdefense.ToJson(existingSaveData)
+
+			newSave, err := cli.CreateSave(realmdefense.CreateSaveRequest{
+				Seq:  0,
+				Data: string(newSaveDataBytes),
+			})
+
+			if err != nil {
+				shell.Println("Failed to create save:", err)
+				return
+			}
+
+			shell.Println("New save created! Your new player ID:", newSave.Id)
+
+			// And finally, bind back our social account to it
+			shell.Println("Binding back account to ", previousSocialId, "...")
+			err = cli.Bind(realmdefense.BindRequest{
+				Id:          newSave.Id,
+				Platform:    "PlayGames",
+				SocialAlias: fmt.Sprintf("%d", time.Now().Unix()),
+				SocialId:    previousSocialId,
+			})
+
+			if err != nil {
+				shell.Println("Failed to bind social account:", err)
+				return
+			}
+
+			shell.Println("Social account bound, pushing this new save as the primary one")
+			existingSaveData.Seq = previousSaveSeq + 5
+			existingSaveData.Uid = newSave.Id
+			existingSaveData.Sid = previousSocialId
+			newSaveDataBytes = realmdefense.ToJson(existingSaveData)
+
+			// Send the save to the server
+			err = cli.Save(realmdefense.SaveRequest{
+				Data: string(newSaveDataBytes),
+				Seq:  existingSaveData.Seq,
+				Id:   newSave.Id,
+			})
+			if err != nil {
+				shell.Println("Failed to send new save:", err)
+				return
+			}
+
+			shell.Printf("Saved with Uid=%s, Seq=%d\n", existingSaveData.Uid, existingSaveData.Seq)
+
+			shell.Println("Successfully created and bound back your social account! Open the game, and then")
+			shell.Println("press the 'I played before!' button. Enjoy!")
+		},
+	})
+
+	shell.AddCmd(&ishell.Cmd{
 		Name: "backup",
 		Help: "Backs up your current game save into a file",
 		Func: func(c *ishell.Context) {
