@@ -611,7 +611,7 @@ func setupShell() {
 			// Query the heroes to use
 			heroesNames := []string{
 				"", "Hogan", "Fee", "Obsidian", "Masamune", "Lancelot", "Bolton", "Smoulder", "Connie",
-				"Efrigid", "Helios", "Sethos", "Mabyn", "Yan", "Narlax", "Leif", "Caldera", "Azura",
+				"Efrigid", "Helios", "Sethos", "Mabyn", "Yan", "Narlax", "Leif", "Caldera", "Azura", "Raida"
 			}
 			var heroes []int
 			heroesLevels := []int{30, 30, 30}
