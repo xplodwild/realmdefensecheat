@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	EndpointBabeltimeUS = "http://td-users2.babeltimeus.com/v3"
-	EndpointBabeltimeCA = "http://td-users2.babeltimeca.com/v3"
+	EndpointBabeltimeUS = "http://td-users2.babeltimeus.com/v4"
+	EndpointBabeltimeCA = "http://td-users2.babeltimeca.com/v4"
 )
 
 type Client struct {
