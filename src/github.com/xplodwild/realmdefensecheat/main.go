@@ -123,9 +123,7 @@ func setupShell() {
 		Func: func(c *ishell.Context) {
 			shell.Println("*****************************")
 			shell.Println("This will initialize and create you a new player ID, which will reset your")
-			shell.Println("tournament profile, while restoring your current game save. First of all,")
-			shell.Println("BACKUP YOUR GAME DATA, then RESET THE GAME DATA on your phone, so that it")
-			shell.Println("doesn't synchronize back your old player ID.")
+			shell.Println("tournament profile, while restoring your current game save.")
 			shell.Println("*****************************")
 			shell.Println("Press Enter to continue.")
 
@@ -207,7 +205,9 @@ func setupShell() {
 			shell.Printf("Saved with Uid=%s, Seq=%d\n", existingSaveData.Uid, existingSaveData.Seq)
 
 			shell.Println("Successfully created and bound back your social account! Open the game, and then")
-			shell.Println("press the 'I played before!' button. Enjoy!")
+			shell.Println("go to Settings, Backup & Restore, and press the RESTORE button this time. The game")
+			shell.Println("will tell you that 'some progress might be lost', press OK. You will then have a")
+			shell.Println("fresh start at the tournament.")
 		},
 	})
 
