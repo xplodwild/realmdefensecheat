@@ -614,7 +614,7 @@ func setupShell() {
 				"Efrigid", "Helios", "Sethos", "Mabyn", "Yan", "Narlax", "Leif", "Caldera", "Azura", "Raida",
 			}
 			var heroes []int
-			heroesLevels := []int{30, 30, 30}
+			heroesLevels := []int{35, 35, 35}
 			heroesRanks := []int{6, 6, 6}
 
 			for heroes == nil || len(heroes) != 3 {
@@ -623,10 +623,10 @@ func setupShell() {
 
 			// Ask the heroes levels
 			for i := 0; i < 3; i++ {
-				shell.Println("Please enter", heroesNames[heroes[i]], "level [1-30]")
+				shell.Println("Please enter", heroesNames[heroes[i]], "level [1-35]")
 				heroesLevels[i], err = strconv.Atoi(shell.ReadLine())
 
-				if err != nil || heroesLevels[i] < 1 || heroesLevels[i] > 30 {
+				if err != nil || heroesLevels[i] < 1 || heroesLevels[i] > 35 {
 					shell.Println("Invalid value")
 					i--
 				}
