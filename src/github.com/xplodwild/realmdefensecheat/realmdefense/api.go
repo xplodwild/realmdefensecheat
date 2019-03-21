@@ -211,10 +211,15 @@ type SaveData struct {
 	// Cc is the player's country code
 	Cc  string        `json:"cc"`
 	Cs  []string      `json:"cs"`
+	// Cw is the current world active
 	Cw  int           `json:"cw"`
+	// Cwm is the furthest world map unlocked as int
 	Cwm int           `json:"cwm"`
 	Di  int           `json:"di"`
 	Dlc []SaveDataDlc `json:"dlc"`
+	// Dq is info about daily quest; it has two fields
+	// 	d: some incremental int value
+	//	i: daily trial number
 	Dq  SaveDataDq    `json:"dq"`
 	// E is the player's energy
 	E int `json:"e"`
