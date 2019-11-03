@@ -1,3 +1,7 @@
+# This tool is currently being updated to the latest protocol version, see issue #25 for more details.
+
+If you wish to donate to allow me to spend more time on this, [click here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=CKZV4JWZ8BNUY&currency_code=EUR&source=url).
+
 # Realm Defense Cheat Tool
 
 This is a (legit) cheating tool for Babeltime's Realm Defense game, a mobile game 
